@@ -1,0 +1,6 @@
+{
+  "name": "Sirach Tally",
+  "description": "A high-precision corporate accounting suite featuring rich dashboard analytics, standard ledger logging, real-time voucher entries, and dynamic balance sheets for Sirach.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
