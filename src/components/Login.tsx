@@ -40,15 +40,19 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
     setIsAuthLoading(true);
     setErrorMessage(null);
 
+
     // ALWAYS try remote Firebase Auth FIRST if Firebase is configured
+
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
       const user = result.user;
 
       if (user) {
+
         // Clear any old sandbox bypass token
         localStorage.removeItem('sirach_active_bypass_user');
         
+
         // Query the `/users` collection to check for existing role assignment
         const userDocRef = doc(db, 'users', user.uid);
         const userDocSnap = await getDoc(userDocRef);
@@ -67,6 +71,7 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
         }
 
         onLoginSuccess(user, activeRole);
+
         setIsAuthLoading(false);
         return;
       }
@@ -126,10 +131,13 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
         return;
       }
 
+
       let friendlyError = `Authentication failed: ${err.message || err} [${err.code || 'UNKNOWN'}]`;
       if (err.code === 'auth/user-not-found') friendlyError = 'No account mapped to this email. Try signing up!';
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') friendlyError = 'Incorrect password or credential details. Please try again.';
       if (err.code === 'auth/invalid-email') friendlyError = 'Supplied email format is invalid.';
+
+
       setErrorMessage(friendlyError);
     } finally {
       setIsAuthLoading(false);
@@ -152,13 +160,17 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
     setIsAuthLoading(true);
     setErrorMessage(null);
 
+
+
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       const user = result.user;
 
       if (user) {
+
         // Clear any previous sandbox bypass token
         localStorage.removeItem('sirach_active_bypass_user');
+
 
         // Update user's authentication profile displayName
         await updateProfile(user, { displayName: fullName });
@@ -189,6 +201,7 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
     } catch (err: any) {
       console.error('Email sign-up error:', err);
       if (err.code === 'auth/operation-not-allowed') {
+
         setErrorMessage(
           "Firebase Notice: Email/Password authentication is disabled in your Firebase Console. " +
           "To register a real corporate account:\n" +
@@ -197,6 +210,7 @@ export default function Login({ onLoginSuccess, onBypassLogin }: LoginProps) {
           "Alternatively, you can authenticate using Google or click below to log in as one of the pre-authorized demo users."
         );
         setIsAuthLoading(false);
+
         return;
       }
 

@@ -64,9 +64,11 @@ import {
   UserProfile
 } from './firebaseService';
 
+
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+
 import Login from './components/Login';
 import { LogOut } from 'lucide-react';
 
@@ -463,6 +465,7 @@ export default function App() {
     fetchRemoteData();
   }, [userProfile]);
 
+
   const handleBypassLogin = async (role: string, name: string) => {
     setIsLoading(true);
     const email = `${name.toLowerCase().replace(/[^a-z]/g, '')}@sirach.com`;
@@ -529,6 +532,7 @@ export default function App() {
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const handleLogout = async () => {
