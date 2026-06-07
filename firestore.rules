@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserData(uid) {
+      return get(/databases/$(database)/documents/users/$(uid)).data;
+    }
+
+    function getUserRole(uid) {
+      // Safely default to 'Auditor' if no document exists
+      return exists(/databases/$(database)/documents/users/$(uid)) 
+        ? getUserData(uid).role 
+        : 'Auditor';
+    }
+
+    function isHeadAccountant(uid) {
+      return getUserRole(uid) == 'Head Accountant' || uid == 'minakshivinod333';
+    }
+
+    function isSeniorAccountant(uid) {
+      return getUserRole(uid) == 'Senior Accountant' || getUserRole(uid) == 'Manager' || isHeadAccountant(uid);
+    }
+
+    function isAuditor(uid) {
+      return getUserRole(uid) == 'Auditor' || getUserRole(uid) == 'Staff' || getUserRole(uid) == 'Client' || isSeniorAccountant(uid);
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128;
+    }
+
+    // --- Collections ---
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.auth.uid == userId || isHeadAccountant(request.auth.uid));
+    }
+
+    // Accounts Master
+    match /accounts/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Vouchers Book Entry
+    match /vouchers/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Company Entities
+    match /companies/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Cost Centers
+    match /costCenters/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Stock Items
+    match /stockItems/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Bill of Materials Recipe Formulae
+    match /boms/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Employee Profiles / Attendance Rosters
+    match /employees/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Sales Purchase CRM Orders
+    match /orders/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Checks / Cheque Registry
+    match /checks/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Bank Statement Items
+    match /bankStatements/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    // Audit Trace Log Entry
+    match /auditLogs/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isAuditor(request.auth.uid) && isValidId(id);
+    }
+
+    // Automation Rules, Webhooks, Re-Usable configurations
+    match /webhooks/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isHeadAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    match /approvalRules/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isHeadAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    match /recurringConfigs/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    match /customFunctions/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isHeadAccountant(request.auth.uid) && isValidId(id);
+    }
+
+    match /reminderConfigs/{id} {
+      allow read: if isSignedIn() && isAuditor(request.auth.uid);
+      allow write: if isSignedIn() && isSeniorAccountant(request.auth.uid) && isValidId(id);
+    }
+  }
+}

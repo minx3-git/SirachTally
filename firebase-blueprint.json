@@ -1,0 +1,200 @@
+{
+  "entities": {
+    "LedgerAccount": {
+      "title": "LedgerAccount",
+      "description": "Double entry ledger account category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["Asset", "Liability", "Equity", "Income", "Expense"] },
+        "balance": { "type": "number" },
+        "balanceType": { "type": "string", "enum": ["Dr", "Cr"] },
+        "accNo": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["id", "name", "code", "type", "balance", "balanceType"]
+    },
+    "Voucher": {
+      "title": "Voucher",
+      "description": "A financial transaction record representing an entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "vchNo": { "type": "string" },
+        "date": { "type": "string" },
+        "vchType": { "type": "string", "enum": ["Payment", "Receipt", "Contra", "Journal", "Sales", "Purchase"] },
+        "reference": { "type": "string" },
+        "narration": { "type": "string" },
+        "status": { "type": "string", "enum": ["Cleared", "Pending", "Draft", "Declined"] },
+        "particulars": { "type": "string" },
+        "amountValue": { "type": "number" }
+      },
+      "required": ["id", "vchNo", "date", "vchType", "reference", "narration", "status"]
+    },
+    "Company": {
+      "title": "Company",
+      "description": "Corporate legal trade entity registered within ERP",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "gstin": { "type": "string" },
+        "city": { "type": "string" },
+        "currency": { "type": "string" },
+        "currencySymbol": { "type": "string" }
+      },
+      "required": ["id", "name", "gstin", "city", "currency"]
+    },
+    "CostCenter": {
+      "title": "CostCenter",
+      "description": "A cost track segment or subdivision within the company",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "budgetAllocated": { "type": "number" },
+        "budgetSpent": { "type": "number" }
+      },
+      "required": ["id", "name", "category", "budgetAllocated", "budgetSpent"]
+    },
+    "StockItem": {
+      "title": "StockItem",
+      "description": "A single raw material component or finished inventory item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "groupName": { "type": "string" },
+        "category": { "type": "string" },
+        "godown": { "type": "string" },
+        "batchNo": { "type": "string" },
+        "expiryDate": { "type": "string" },
+        "quantity": { "type": "number" },
+        "rate": { "type": "number" },
+        "unit": { "type": "string" },
+        "reorderLevel": { "type": "number" },
+        "priceLevelRetail": { "type": "number" },
+        "priceLevelWholesale": { "type": "number" }
+      },
+      "required": ["id", "name", "groupName", "category", "godown", "batchNo", "quantity", "rate", "unit"]
+    },
+    "BillOfMaterial": {
+      "title": "BillOfMaterial",
+      "description": "Recipe formula blueprint comprising item materials lists",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "finishedGoodName": { "type": "string" },
+        "bomNo": { "type": "string" }
+      },
+      "required": ["id", "finishedGoodName", "bomNo"]
+    },
+    "Employee": {
+      "title": "Employee",
+      "description": "Onboarder staff profile tracking dynamic attendance payroll",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "designation": { "type": "string" },
+        "department": { "type": "string" },
+        "baseSalary": { "type": "number" },
+        "pfDeduction": { "type": "number" },
+        "esiDeduction": { "type": "number" },
+        "profTax": { "type": "number" },
+        "attendanceDays": { "type": "number" },
+        "bankAccNo": { "type": "string" }
+      },
+      "required": ["id", "name", "designation", "department", "baseSalary", "attendanceDays", "bankAccNo"]
+    },
+    "SalesPurchaseOrder": {
+      "title": "SalesPurchaseOrder",
+      "description": "An order sheet tracker for trading",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "orderNo": { "type": "string" },
+        "orderType": { "type": "string", "enum": ["SalesOrder", "PurchaseOrder", "Quotation", "CreditNote", "DebitNote"] },
+        "date": { "type": "string" },
+        "partyName": { "type": "string" },
+        "itemsSummary": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["Open", "Closed", "Cancelled"] }
+      },
+      "required": ["id", "orderNo", "orderType", "date", "partyName", "itemsSummary", "totalAmount", "status"]
+    },
+    "BankCheck": {
+      "title": "BankCheck",
+      "description": "A cheque sheet printed for payment execution",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "checkNo": { "type": "string" },
+        "date": { "type": "string" },
+        "payee": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["Printed", "Pending", "Cancelled"] }
+      },
+      "required": ["id", "checkNo", "date", "payee", "amount", "status"]
+    },
+    "BankStatementItem": {
+      "title": "BankStatementItem",
+      "description": "A parsed transaction row on bank passbook",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "date": { "type": "string" },
+        "description": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["Deposit", "Withdrawal"] },
+        "isMatched": { "type": "boolean" },
+        "matchedVoucherNo": { "type": "string" }
+      },
+      "required": ["id", "date", "description", "amount", "type", "isMatched"]
+    },
+    "AuditLogEntry": {
+      "title": "AuditLogEntry",
+      "description": "Historical trace log detailing actions in ERP dashboard",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "userName": { "type": "string" },
+        "userRole": { "type": "string" },
+        "action": { "type": "string" },
+        "module": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["id", "timestamp", "userName", "userRole", "action", "module", "details"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account record tracking explicit organizational roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string", "enum": ["Head Accountant", "Senior Accountant", "Auditor", "Manager", "Staff", "Client"] }
+      },
+      "required": ["uid", "email", "name", "role"]
+    }
+  },
+  "firestore": {
+    "accounts": { "schema": "LedgerAccount", "description": "Chart of accounts" },
+    "users": { "schema": "UserProfile", "description": "User accounts with system roles" },
+    "vouchers": { "schema": "Voucher", "description": "Ledger voucher double-entries" },
+    "companies": { "schema": "Company", "description": "Corporate entities list" },
+    "costCenters": { "schema": "CostCenter", "description": "Cost centers database" },
+    "stockItems": { "schema": "StockItem", "description": "General stock inventory ledger" },
+    "boms": { "schema": "BillOfMaterial", "description": "Bills of Materials formulae" },
+    "employees": { "schema": "Employee", "description": "Human resources rosters" },
+    "orders": { "schema": "SalesPurchaseOrder", "description": "Trading order registry" },
+    "checks": { "schema": "BankCheck", "description": "Checks printed registry" },
+    "bankStatements": { "schema": "BankStatementItem", "description": "Reconciliation statement sheets" },
+    "auditLogs": { "schema": "AuditLogEntry", "description": "Audit trails logger" }
+  }
+}
